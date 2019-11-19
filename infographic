@@ -1,0 +1,87 @@
+#
+# Author: Adrian Martinez
+# Description: program inputs text file and
+#
+
+import os, sys
+
+cwd = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, cwd)
+from graphics import graphics
+
+def main():
+    file_name = input('file input name: \n')
+    text_file = open(file_name, 'r').readlines()
+    cap_punct_lst, word_count = dict_creation(text_file)
+    size_lst = word_counts(word_count)
+    output_string = ''
+    for size in size_lst:
+        output_string += most_used(size)
+    print(output_string)
+    master_lst = [size_lst, cap_punct_lst]
+    table(graphics, file_name, word_count, output_string, master_lst)
+
+
+def dict_creation(text_file):
+    word_list = []
+    word_count = {}
+    capital_set = set()
+    punctuation_set = set()
+    for line in text_file:
+        if line != '\n':
+            words = line.strip('\n').split(' ')
+            word_list.append(words)
+    for words in word_list:
+        if words not in word_count:
+            word_count[words] = 0
+            if words[0].isupper():
+                capital_set.add(words)
+            if words[-1] in ',.?!':
+                punctuation_set.add(words)
+        word_count[words] += 1
+    cap_punct_lst = [len(capital_set), len(punctuation_set)]
+    return cap_punct_lst
+
+def word_counts(word_count):
+    size_lst = []
+    word_size_small = {}
+    word_size_medium = {}
+    word_size_large = {}
+    for word,values in word_count:
+        if len(word) <= 4:
+            word_size_small[word] = values
+        elif 5 <= len(word) <= 7:
+            word_size_medium[word] = values
+        elif len(word) >= 8:
+            word_size_large[word] = values
+    size_lst.append(word_size_small)
+    size_lst.append(word_size_medium)
+    size_lst.append(word_size_large)
+    return size_lst
+
+def most_used(size):
+    biggest_number = 0
+    common_word = ' '
+    for word,value in size:
+        if value > biggest_number:
+            biggest_number = value
+            common_word = word
+    output_string = (common_word + ' (' + str(biggest_number) + 'x) ')
+    return output_string
+
+def table(graphics, file_name, word_count, output_string, master_lst):
+    gui = graphics(650, 700, 'infographic')
+    gui.rectangle(0, 0, 650, 700, 'grey')
+    gui.text(50, 50, file_name, 45, 'cyan')
+    gui.text(50, 75, 'Total Unique Words: ', 'white', 45)
+    gui.text(60, 75, len(word_count), 'white', 45)
+    gui.text(50, 100, 'Most Used Words(s/m/l):  ')
+    gui.text(75, 100, output_string, 'cyan', 40)
+    graphs(gui, master_lst)
+
+def graphs(gui, master_lst):
+    width = 125
+    offset = 0
+    gui.text(50, 125, 'Word lengths', 'white', 45)
+    gui.rectangle(offset*)
+    gui.text()
