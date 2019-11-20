@@ -12,15 +12,13 @@ from graphics import graphics
 def main():
     file_name = input('file input name: \n')
     text_file = open(file_name, 'r').readlines()
-    cap_punct_lst, word_count = dict_creation(text_file)
+    cap_lst, punct_lst, word_count = dict_creation(text_file)
     size_lst = word_counts(word_count)
     output_string = ''
     for size in size_lst:
         output_string += most_used(size)
-    print(output_string)
-    master_lst = [size_lst, cap_punct_lst]
+    master_lst = [size_lst, cap_lst, punct_lst]
     table(graphics, file_name, word_count, output_string, master_lst)
-
 
 def dict_creation(text_file):
     word_list = []
@@ -30,7 +28,8 @@ def dict_creation(text_file):
     for line in text_file:
         if line != '\n':
             words = line.strip('\n').split(' ')
-            word_list.append(words)
+            for word in words:
+                word_list.append(word)
     for words in word_list:
         if words not in word_count:
             word_count[words] = 0
@@ -39,15 +38,16 @@ def dict_creation(text_file):
             if words[-1] in ',.?!':
                 punctuation_set.add(words)
         word_count[words] += 1
-    cap_punct_lst = [len(capital_set), len(punctuation_set)]
-    return cap_punct_lst
+    cap_lst = [len(capital_set)]
+    punct_lst = [len(punctuation_set)]
+    return cap_lst, punct_lst, word_count
 
 def word_counts(word_count):
     size_lst = []
     word_size_small = {}
     word_size_medium = {}
     word_size_large = {}
-    for word,values in word_count:
+    for word,values in word_count.items():
         if len(word) <= 4:
             word_size_small[word] = values
         elif 5 <= len(word) <= 7:
@@ -62,7 +62,7 @@ def word_counts(word_count):
 def most_used(size):
     biggest_number = 0
     common_word = ' '
-    for word,value in size:
+    for word,value in size.items():
         if value > biggest_number:
             biggest_number = value
             common_word = word
@@ -72,16 +72,41 @@ def most_used(size):
 def table(graphics, file_name, word_count, output_string, master_lst):
     gui = graphics(650, 700, 'infographic')
     gui.rectangle(0, 0, 650, 700, 'grey')
-    gui.text(50, 50, file_name, 45, 'cyan')
+    gui.text(50, 50, file_name, 'cyan', 45)
     gui.text(50, 75, 'Total Unique Words: ', 'white', 45)
     gui.text(60, 75, len(word_count), 'white', 45)
-    gui.text(50, 100, 'Most Used Words(s/m/l):  ')
+    gui.text(50, 100, 'Most Used Words(s/m/l):  ', 20)
     gui.text(75, 100, output_string, 'cyan', 40)
-    graphs(gui, master_lst)
+    length_graph(gui, master_lst)
 
-def graphs(gui, master_lst):
-    width = 125
+
+def length_graph(gui, master_lst):
     offset = 0
-    gui.text(50, 125, 'Word lengths', 'white', 45)
-    gui.rectangle(offset*)
-    gui.text()
+    width = 125
+    x = offset * width + 25
+    row_total = 0
+    for i in range(0, 3):
+        row_total += int(len(master_lst[0][i]))
+    gui.text(x, 95, 'Word lengths', 'white', 45)
+    gui.rectangle(x, 135, 125, 450, 'blue')
+    gui.text(x + 5, 140, 10, 'small words', 10)
+    gui.rectangle(x, ((450/row_total)+int(len(master_lst[0][0]))), 125, ((450/row_total)+int(len(master_lst[0][0]))),
+                  'green')
+    gui.text(x + 5, ((450/row_total)+int(len(master_lst[0][0]))+5), 'medium words', 'white', 10)
+    gui.rectangle(x, ((450/row_total)+int(len(master_lst[0][1]))),125,((450/row_total)+int(len(master_lst[0][1]))),
+                  'green')
+    gui.text(x + 5, ((450/row_total)+int(len(master_lst[0][1]))+5), 'large words', 'white', 10)
+    gui.text(1*width+25, 95, 'Cap/Non-Cap', 'white', 45)
+    gui.rectangle(1*width+25, 135, 125, 450, 'blue')
+    gui.text(1*width+30, 140, 10, 'Capitalized', 10)
+    gui.rectangle(x,((450/row_total)+int(len(master_lst[1][0]))),125,((450/row_total)+int(len(master_lst[1][0]))),
+                  'green')
+    gui.text(1*width+30,((450/row_total)+int(len(master_lst[1][0]))+5),'Non Capitalized','white',10)
+    gui.text(2*width+25, 95, 'Punct/Non-Punct', 'white', 45)
+    gui.rectangle(1*width+25, 135, 125, 450, 'blue')
+    gui.text(2*width+30, 140, 10, 'Punctuated', 10)
+    gui.rectangle(2*width+25,((450/row_total)+int(len(master_lst[0][0]))),125,((450/row_total)+
+                                                                               int(len(master_lst[0][0]))),'green')
+    gui.text(2*width+30,((450/row_total)+int(len(master_lst[0][0]))+5),'Non Punctuated','white',10)
+
+main()
