@@ -19,10 +19,7 @@ def main():
         output_string += most_used(size)
     master_lst = [size_lst, cap_lst, punct_lst]
     table(graphics, file_name, word_count, output_string, master_lst)
-    print(len(master_lst[0][0]))
-    print(len(master_lst[0][1]))
-    print(master_lst[1][0])
-    print(master_lst[2][0])
+
 
 def dict_creation(text_file):
     word_list = []
@@ -87,17 +84,15 @@ def table(graphics, file_name, word_count, output_string, master_lst):
 def length_graph(gui, master_lst):
     offset = 0
     width = 125
-    x = offset * width + 25
+    x = int(offset * width + 25)
     row_total = 0
     for i in range(0, 3):
         row_total += len(master_lst[0][i])
-    print(row_total)
-    print((450//row_total)+len(master_lst[0][0]))
-    print(x)
+
     gui.text(x, 95, 'Word lengths', 'white', 45)
     gui.rectangle(x, 135, 125, 450, 'blue')
     gui.text(x + 5, 140,'small words','white', 10)
-    gui.rectangle(x, ((450//row_total)+len(master_lst[0][0]), 125, ((450//row_total)+len(master_lst[0][0])),'green'))
+    gui.rectangle(x, int(((450//row_total)+len(master_lst[0][0]))), 125, int(((450//row_total)+len(master_lst[0][0]))),'green')
     gui.text(x + 5, ((450//row_total)+len(master_lst[0][0])+5), 'medium words', 'white', 10)
     gui.rectangle(x, ((450//row_total)+len(master_lst[0][1])),125,((450//row_total)+len(master_lst[0][1])),
                   'green')
@@ -110,7 +105,7 @@ def length_graph(gui, master_lst):
     gui.text(1*width+30,((450//row_total)+master_lst[1][0]+5),'Non Capitalized','white',10)
     gui.text(2*width+25, 95, 'Punct/Non-Punct', 'white', 45)
     gui.rectangle(1*width+25, 135, 125, 450, 'blue')
-    gui.text(2*width+30, 140, 10, 'Punctuated', 10)
+    gui.text(2*width+30, 140, 'Punctuated', 'white', 10)
     gui.rectangle(2*width+25,((450//row_total)+master_lst[2][0]),125,((450//row_total)+
                                                                                master_lst[2][0]),'green')
     gui.text(2*width+30,((450//row_total)+master_lst[2][0]+5),'Non Punctuated','white',10)
