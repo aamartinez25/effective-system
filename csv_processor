@@ -1,0 +1,48 @@
+#
+# Author: Adrian Martinez
+# Description: program reads csv file with no column labels and can compute maximum, minimum of a
+# column.
+#
+
+import csv
+
+def main():
+    commands = {
+        'min': minimum,
+        'max': maximum,
+        'avg': average
+    }
+    file_name = 'numbers.csv'  # input('Enter CSV file name:\n')
+    csv_file = open(file_name)
+    numbers = []
+    for row in csv_file:
+        split_row = row.strip('\n').split(',')
+        temp_list = []
+        for num in split_row:
+            temp_list.append(float(num))  # if '.' in temp_lst[row][num]:
+        numbers.append(temp_list)
+    col_input = input('Enter column number: \n')
+    col_op = input('Enter column operation:\n')
+
+    if col_op in commands:
+        func = commands[col_op]
+        func(numbers, col_input)
+    else:
+        print('Command not found.')
+
+def minimum(csv_lst, col_input):
+    minimum_lst = sorted(csv_lst)
+    print('The minimum value in column', col_input, 'is', minimum_lst[:1])
+
+def maximum(csv_lst, col_input):
+    maximum_lst = sorted(csv_lst[col_input])
+    print('The maximum value in column', col_input, 'is', maximum_lst[:-1])
+
+def average(csv_list, col_input):
+    total = 0
+    for n in csv_list[col_input]:
+        total += n
+    aver = total / len(csv_list[col_input])
+    print('The average value in column', col_input, 'is', aver)
+
+main()
