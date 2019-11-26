@@ -1,48 +1,69 @@
 #
 # Author: Adrian Martinez
-# Description: program reads csv file with no column labels and can compute maximum, minimum of a
+# Description: program reads csv file with no column labels and can outputs maximum, minimum and average values of a
 # column.
 #
 
-import csv
-
 def main():
-    commands = {
+    commands = {            # Dictionary containing acceptable command prompts with corresponding functions
         'min': minimum,
         'max': maximum,
         'avg': average
     }
-    file_name = 'numbers.csv'  # input('Enter CSV file name:\n')
+    file_name = input('Enter CSV file name:\n') # Prompts user for file name
     csv_file = open(file_name)
-    numbers = []
+    numbers = []                                # Initialize 2D list of numbers from csv file
     for row in csv_file:
         split_row = row.strip('\n').split(',')
-        temp_list = []
+        temp_list = []                          # Uses temporary list to flip strings to floats
         for num in split_row:
-            temp_list.append(float(num))  # if '.' in temp_lst[row][num]:
+            temp_list.append(float(num))
         numbers.append(temp_list)
-    col_input = input('Enter column number: \n')
-    col_op = input('Enter column operation:\n')
-
-    if col_op in commands:
-        func = commands[col_op]
-        func(numbers, col_input)
+    col_input = int(input('Enter column number: \n'))   # Prompts user for column number
+    col_op = input('Enter column operation:\n')         # Prompts user for operation
+    column = []                                 # Creates a list with numbers in designated column
+    for row in range(len(numbers)):
+        for num in range(len(numbers[row])):
+            if num == col_input - 1:            # -1 to ensure proper column numbers are used
+                column.append(numbers[row][num])
+    if col_op in commands:                      # Calls function if operation is within limits
+        func = commands[col_op]                 # Sets input to proper function name
+        func(column, col_input)                 # Calls function
     else:
         print('Command not found.')
 
 def minimum(csv_lst, col_input):
+    '''
+    function sorts designated column list and outputs first position in a print as minimum value
+    :param csv_lst: values from user designated column
+    :param col_input: user designated column number
+    :return:
+    '''
     minimum_lst = sorted(csv_lst)
-    print('The minimum value in column', col_input, 'is', minimum_lst[:1])
+    print('The minimum value in column', col_input, 'is:', minimum_lst[0])
 
 def maximum(csv_lst, col_input):
-    maximum_lst = sorted(csv_lst[col_input])
-    print('The maximum value in column', col_input, 'is', maximum_lst[:-1])
+    '''
+    function sorts designated column list and outputs last position in a print as maximum value
+    :param csv_lst: values from user designated column
+    :param col_input: user designated column number
+    :return:
+    '''
+    maximum_lst = sorted(csv_lst)
+    print('The maximum value in column', col_input, 'is:', maximum_lst[-1])
 
 def average(csv_list, col_input):
+    '''
+    function loops through user designated list and adds all values then outputs quotient of sum of all values
+    and number of values
+    :param csv_list: values from user designated column
+    :param col_input: user designated column number
+    :return:
+    '''
     total = 0
-    for n in csv_list[col_input]:
+    for n in csv_list:
         total += n
-    aver = total / len(csv_list[col_input])
-    print('The average value in column', col_input, 'is', aver)
+    aver = total / len(csv_list)
+    print('The average for column', col_input, 'is:', aver)
 
 main()
