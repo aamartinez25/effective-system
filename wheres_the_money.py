@@ -1,15 +1,20 @@
 #
 #Author: Adrian Martinez
-#Description: Program accepts number of inputs and helps user trace where their money is going
+#Description: Program accepts number of inputs and helps user trace where their money is going.
+# Inputs are broken down to percentages of total income with visual representation of total
+# expenditures. If the input income exceeds maximum tax bracket, this is noted at the end of the
+# program output. If the total output of expenditures exceeds income, this is noted at the end
+# of the program output
 #
 
 print('-----------------------------')
 print('----- WHERE\'S THE MONEY -----')
 print('-----------------------------')
-annual_salary = input('What is your annual salary?\n')
-if not annual_salary.isnumeric() or (int(annual_salary) <= 0):
-    print('Must enter positive integer for salary.')
-    exit(0)
+
+annual_salary = input('What is your annual salary?\n')          # User input on monthly expenditures
+if not annual_salary.isnumeric() or (int(annual_salary) <= 0):  # If input is not a positive integer
+    print('Must enter positive integer for salary.')            # program exits with prompt to enter
+    exit(0)                                                     # type of input
 else:
     annual_salary = int(annual_salary)
 
@@ -41,7 +46,7 @@ if not annual_travel.isnumeric() or (int(annual_travel) <= 0):
 else:
     annual_travel = int(annual_travel)
 
-tax_percent = 0
+tax_percent = 0                                             #Tax bracket dependent on user income
 if (annual_salary > 0) and (annual_salary <=15000):
     tax_percent = 10
 elif (annual_salary > 15000) and (annual_salary <=75000):
@@ -50,39 +55,48 @@ elif (annual_salary > 75000) and (annual_salary <=200000):
     tax_percent = 25
 elif annual_salary > 200000:
     tax_percent = 30
+
 taxes = annual_salary * (tax_percent / 100)
-tax_percent = float(format(tax_percent, '.1f'))
 
+if int(taxes) >= 50000:                                     #Taxes are capped at $50,000
+    taxes = 50000
+    tax_percent = (taxes / annual_salary) * 100
 
-total_expense = monthly_housing + monthly_bills + monthly_food + annual_travel
-extra = annual_salary - (monthly_housing + monthly_bills + monthly_food + annual_travel)
-bill_percent = monthly_bills / total_expense
-housing_percent = monthly_housing / total_expense
-food_percent = monthly_food / total_expense
-travel_percent = annual_travel / total_expense
-extra_percent = extra / (total_expense + annual_salary)
+total_expense = monthly_housing + monthly_bills + monthly_food + annual_travel + taxes
+extra = annual_salary - total_expense
+
+bill_percent = (monthly_bills / annual_salary) * 100        #Percentages calculated against annual
+housing_percent =(monthly_housing / annual_salary) * 100    # salary and kept as a float
+food_percent = (monthly_food / annual_salary) * 100
+travel_percent = (annual_travel / annual_salary) * 100
+extra_percent = extra / annual_salary * 100
+
+#Max percentage calculated to set bracketed title and ending lines. Lines match the longest
+# hashed visual representation of percentages
+longest_percentage = max(int(bill_percent), int(housing_percent), int(food_percent),
+                         int(travel_percent), int(tax_percent), int(extra_percent))
 
 print()
-print('--------------------------')
-print('See the financial breakdown below, based on a a salary of $', annual_salary)
-print('----------------------------------------------' )
+print('-' * (42 + longest_percentage))
+print('See the financial breakdown below, based on a salary of $' + str(annual_salary))
+print('-' * (42 + longest_percentage))
+#numbers are formatted to line up the user inputs
+print('| mortgage/rent | $',  format(monthly_housing, '10,.2f'), '|', format(housing_percent,
+    '5.1f') + '% |', "#" * int(housing_percent))
+print('|         bills | $',  format(monthly_bills, '10,.2f'), '|', format(bill_percent,
+    '5.1f') + '% |', "#" * int(bill_percent ))
+print('|          food | $',  format(monthly_food, '10,.2f'), '|', format(food_percent,
+    '5.1f') + '% |', "#" * int(food_percent))
+print('|        travel | $',  format(annual_travel, '10,.2f'), '|', format(travel_percent,
+    '5.1f') + '% |', "#" * int(travel_percent))
+print('|           tax | $',  format(taxes, '10,.2f'), '|', format(tax_percent,
+    '5.1f') + '% |', "#" * int(tax_percent))
+print('|         extra | $',  format(extra, '10,.2f'), '|', format(extra_percent,
+    '5.1f') + '% |', "#" * int(extra_percent))
 
-print('| mortgage/rent | $',  format(monthly_housing, '11,.2f'), '|',
-      format(housing_percent, '6.1%'), "|", "#" * int(housing_percent * 10))
-print('|         bills | $',  format(monthly_bills, '11,.2f'), '|',
-      format(bill_percent, '6.1%'), "|", "#" * (int(bill_percent * 10)))
-print('|          food | $',  format(monthly_food, '11,.2f'), '|',
-      format(food_percent, '6.1%'), "|", "#" * (int(food_percent * 10)))
-print('|        travel | $',  format(annual_travel, '11,.2f'), '|',
-      format(travel_percent, '6.1%'), "|", "#" * (int(housing_percent * 10)))
-print('|           tax | $',  format(taxes, '11,.2f'), '|', tax_percent, "|", "#" * (int(tax_percent)))
-print('|         extra | $',  format(extra, '11,.2f'), '|',
-      format(extra_percent, '6.1%'), "|", "#" * (int(extra_percent * 10)))
+print('-' * (42 + longest_percentage))
 
-print('---------------------------------------------------------------------')
-
-if extra < 0:
-    print('>>>> WARNING: DEFICIT <<<<')
-if taxes >= 50000:
-    print('>>>> TAX LIMIT REACHED <<<<')
-#| mortgge/rent | $  24,000.00 |  60.0% |
+if extra < 0:                                   #If user inputs numbers that create either a
+    print('>>> WARNING: DEFICIT <<<')           # deficit or reach the tax limit, it is noted
+if taxes >= 50000:                              # here at the end of the program output.
+    print('>>> TAX LIMIT REACHED <<<')
