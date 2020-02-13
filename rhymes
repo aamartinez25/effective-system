@@ -1,0 +1,87 @@
+''' File: rhymes.py
+    Author: Adrian Martinez
+    Purpose of program:
+    Course no., semester: CSC 120, Spring 2020
+'''
+
+def main():
+    dictionary  = {}
+    filename    = 'PronunciationDictionary.txt' #input()
+    with open(filename) as dictionary_object:
+        for line in dictionary_object:
+            word = line.strip('\n').split()
+            dictionary[word[0]] = word[1:]
+    word1 = input().upper()
+    word2 = input().upper()
+    word3 = input().upper()
+    rhyme_dictionary    = {word1:set(), word2:set(), word3:set()}
+    word_list           = [word1, word2, word3]
+    stressor(word_list, dictionary, rhyme_dictionary)
+    print_rhymes(rhyme_dictionary)
+
+def stressor(word_list, dictionary, rhyme_dictionary):
+    '''
+    function finds phonemes for input words and splits into rhyming portion
+    and beginning of word. function then sends information to find rhyming
+    words based on split rhyming convention. Rhyming convention finds primary
+    stressor within phonetic word string and splits word into two halves, front
+    and back.
+    :param word_list: list of three user input words
+    :param dictionary: master dictionary containing all words as keys and
+                        phonetic pronunciation with stressors as values
+    :param rhyme_dictionary: dictionary to be built of rhyming words with
+                            input words as keys and rhyming words as values
+    :return: None
+    '''
+    for word in word_list:
+        phoneme = dictionary[word]
+        for phoneme_list in phoneme:
+            for phonetic_string in phoneme_list:
+                if phonetic_string.endswith('1'):
+                    stress_string = phoneme.index(phonetic_string)
+                    neg_index = -len(phoneme_list[stress_string:])
+                    word_info = (word, phonetic_string, neg_index)
+                    rhyme_finder(word_info, dictionary,
+                                 rhyme_dictionary)
+
+def rhyme_finder(word_info, dictionary, rhyme_dictionary):
+    '''
+    function compares split rhyming portion from stressor() to all values
+    within dictionary. If compared value is equal to passed rhyming convention
+    from the last index position to primary stressor and different from first
+    index position to primary stressor, key is added to rhyme_dictionary
+    :param word_info: tuple containing rhyming convention of input words
+    :param dictionary: master dictionary containing all words as keys and
+                        phonetic pronunciation with stressors as values
+    :param rhyme_dictionary: dictionary to be built of rhyming words with
+                            input words as keys and rhyming words as values
+    :return: None
+    '''
+    rhyme_word  = word_info[0]
+    phon_string = word_info[1]
+    index       = word_info[2]
+    for key, value in dictionary:
+        for phone in value:
+            if phone[index:] == phon_string[index:] and \
+                phone[:index] != phon_string[:index]:
+                rhyme_dictionary[rhyme_word].add(key)
+
+def print_rhymes(rhyme_dictionary):
+    '''
+    function prints out contents of rhyme_dictionary. User input word is
+    printed first followed by alphabetic list of all rhyming words. If no words
+    are found, 'none found' is printed.
+    :param rhyme_dictionary: dictionary to be built of rhyming words with
+                            input words as keys and rhyming words as values
+    :return: None
+    '''
+    for key,value in rhyme_dictionary:
+        print('Rhymes for:', key)
+        for words in value:
+            if words:
+                print('\t', words)
+            else:
+                print('-- none found --')
+
+if __name__ == '__main__':
+    main()
